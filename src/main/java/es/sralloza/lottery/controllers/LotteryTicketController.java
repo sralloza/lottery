@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import es.sralloza.lottery.models.Lottery;
-import es.sralloza.lottery.models.PrizedLotteryTicket;
+import es.sralloza.lottery.models.LotteryTicket;
 import es.sralloza.lottery.services.LotteryService;
 import es.sralloza.lottery.services.LotteryTicketService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,7 +72,7 @@ public class LotteryTicketController {
     @Operation(summary = "Get lottery ticket prize", description = "Returns the lottery ticket prize. The prize is related to the entire series (10 tickets).")
     @ApiResponse(responseCode = "200", description = "Successful Response", content = @Content(schema = @Schema(implementation = Integer.class)))
     @GetMapping(path = "/{number}", produces = "application/json")
-    public PrizedLotteryTicket getLotteryTicketPrize(
+    public LotteryTicket getLotteryTicketPrize(
             @Parameter(description = "Lottery ticket number") @PathVariable("number") @Valid @Min(0) @Max(99999) Integer number) {
         System.out.println(number);
         return lotteryTicketService.getLotteryTicketByNumber(number);

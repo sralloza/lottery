@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import es.sralloza.lottery.exceptions.ParseError;
 import es.sralloza.lottery.models.Lottery;
-import es.sralloza.lottery.models.PrizedLotteryTicket;
+import es.sralloza.lottery.models.LotteryTicket;
 import redis.clients.jedis.JedisPooled;
 
 @Repository("redis")
@@ -100,9 +100,9 @@ public class RedisService {
     }
 
     // Lottery tickets
-    public void saveMultipleLotteryTickets(List<PrizedLotteryTicket> numbers, Lottery lottery) {
+    public void saveMultipleLotteryTickets(List<LotteryTicket> numbers, Lottery lottery) {
         List<String> msetArgs = new ArrayList<>();
-        for (PrizedLotteryTicket ticket : numbers) {
+        for (LotteryTicket ticket : numbers) {
             msetArgs.add(String.format("TICKET_%s_%s", lottery.getDateString(), ticket.number));
             msetArgs.add(ticket.prize.toString());
         }
@@ -110,15 +110,15 @@ public class RedisService {
         pool.mset(args);
     }
 
-    public void saveLotteryTicket(PrizedLotteryTicket ticket, Lottery lottery) {
+    public void saveLotteryTicket(LotteryTicket ticket, Lottery lottery) {
         pool.set(String.format("TICKET_%s_%s", lottery.getDateString(), ticket.number), ticket.prize.toString());
     }
 
-    public PrizedLotteryTicket getLotteryTicketByNumber(Integer number) {
+    public LotteryTicket getLotteryTicketByNumber(Integer number) {
         String result = pool.get("TICKET_" + number.toString());
         if (result == null)
             return null;
         Integer prize = Integer.parseInt(result);
-        return new PrizedLotteryTicket(number, prize);
+        return new LotteryTicket(number, prize);
     }
 }

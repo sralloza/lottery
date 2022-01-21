@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import es.sralloza.lottery.exceptions.ServerError;
 import es.sralloza.lottery.models.Lottery;
-import es.sralloza.lottery.models.PrizedLotteryTicket;
+import es.sralloza.lottery.models.LotteryTicket;
 
 @Service
 public class LotteryTicketService {
@@ -28,13 +28,13 @@ public class LotteryTicketService {
     }
 
     public Integer getMoneyWon(Integer number, Integer moneyBet) {
-        PrizedLotteryTicket ticket = getLotteryTicketByNumber(number);
+        LotteryTicket ticket = getLotteryTicketByNumber(number);
         if (ticket == null) return 0;
         return ticket.prize * moneyBet / 2000;
     }
 
-    public PrizedLotteryTicket getLotteryTicketByNumber(Integer number) {
-        PrizedLotteryTicket ticket = redis.getLotteryTicketByNumber(number);
+    public LotteryTicket getLotteryTicketByNumber(Integer number) {
+        LotteryTicket ticket = redis.getLotteryTicketByNumber(number);
         if (ticket == null)
             return null;
         return ticket;
@@ -56,10 +56,10 @@ public class LotteryTicketService {
         String jsonTickets = responseJson.getJSONArray("compruebe").toString().replace("decimo", "number");
 
         Gson gson = new Gson();
-        Type resultType = new TypeToken<List<PrizedLotteryTicket>>() {
+        Type resultType = new TypeToken<List<LotteryTicket>>() {
         }.getType();
 
-        List<PrizedLotteryTicket> lotteryTickets = gson.fromJson(jsonTickets, resultType);
+        List<LotteryTicket> lotteryTickets = gson.fromJson(jsonTickets, resultType);
         redis.saveMultipleLotteryTickets(lotteryTickets, lottery);
         redis.setLastUpdateNow();
         return;
